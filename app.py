@@ -63,4 +63,5 @@ def verify_password():
         return jsonify({"status": "error", "message": "Incorrect password"}), 401
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host = '0.0.0.0',debug=True)
+
