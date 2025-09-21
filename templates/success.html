@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful Web App</title>
+  
+</head>
+<body>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .container {
+      max-width: 375px;
+      margin: 0 auto;
+      background: #fff;
+      min-height: 100vh;
+      position: relative;
+    }
+    .green-top {
+      background: #29d263;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+      padding: 32px 0 36px 0;
+      text-align: center;
+      position: relative;
+    }
+    .checkmark-circle {
+      background: #fff;
+      width: 56px;
+      height: 56px;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+    }
+    .checkmark {
+      color: #29d263;
+      font-size: 36px;
+      font-weight: bold;
+    }
+    .success-text {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.25px;
+      margin-top: 12px;
+    }
+    .success-date {
+      color: #fff;
+      font-size: 14px;
+      margin-top: 5px;
+      opacity: 0.85;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(167,155,181,0.09);
+      padding: 20px 18px;
+      width: 87%;
+      margin: -36px auto 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .avatar-container {
+      background: #f4f2fd;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 18px rgba(131,79,242,0.12);
+    }
+    .avatar-icon {
+      color: #834ff2;
+      font-size: 32px;
+    }
+    .details {
+      flex-grow: 1;
+    }
+    .receiver {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .phone {
+      font-size: 13px;
+      color: #7d7494;
+      margin-bottom: 0px;
+    }
+    .amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: #19124a;
+      margin-left: auto;
+    }
+    .split-row {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      margin-top: 5px;
+      font-size: 15px;
+    }
+    .split-link {
+      color: #834ff2;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 17px;
+    }
+    .action-btn {
+      background: #f6f3fd;
+      color: #624d9d;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 0;
+      width: 45%;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 2px 10px rgba(131,79,242,0.08);
+      cursor: pointer;
+      position: relative;
+    }
+    .action-icon-bg {
+      background: #f4f2fd;
+      border-radius: 12px;
+      padding: 7px;
+      box-shadow: 0 2px 10px rgba(131,79,242,0.10);
+    }
+    .icon-details {
+      font-size: 16px;
+      color: #834ff2;
+    }
+    .icon-share {
+      font-size: 16px;
+      color: #834ff2;
+    }
+    .ad-space {
+      width: 87%;
+      margin: 20px auto 0 auto;
+      height: 90px;
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 4px 18px rgba(131,79,242,0.09);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #bcb6c2;
+    }
+    .done-row {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin: 28px 0 14px 0;
+    }
+    .done-btn {
+      font-size: 17px;
+      color: #834ff2;
+      border: none;
+      background: transparent;
+      font-weight: 600;
+      padding: 11px 65px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(131,79,242,0.09);
+      cursor: pointer;
+      letter-spacing: 0.18px;
+    }
+  </style>
+  <div class="container">
+    <div class="green-top">
+      <div class="checkmark-circle">
+        <span class="checkmark">&#10003;</span>
+      </div>
+      <div class="success-text">--Payment Successful--</div>
+      <div class="success-date" id="success-msg"></div>
+    </div>
+    <div class="card">
+      <div class="row">
+        <div class="avatar-container">
+          <span class="avatar-icon">&#128100;</span>
+        </div>
+        <div class="details">
+          <div class="receiver" id="receiver"></div>
+          <div class="phone" id="phone"></div>
+        </div>
+        <div class="amount" id="amount"></div>
+      </div>
+      <div class="split-row">
+        <span class="split-link">Split Expense</span>
+      </div>
+      <div class="action-row">
+        <button class="action-btn">
+          <span class="action-icon-bg"><span class="icon-details">&#128196;</span></span>
+          View Details
+        </button>
+        <button class="action-btn">
+          <span class="action-icon-bg"><span class="icon-share">&#128257;</span></span>
+          Share Receipt
+        </button>
+      </div>
+    </div>
+    <div class="ad-space">
+      Advertisement Here
+    </div>
+    <div class="done-row">
+      <button class="done-btn"><a href="/">Done</a></button>
+    </div>
+  </div>
+</body>
+</html>

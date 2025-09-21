@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>UPI QR Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 30px; }
+    .hidden { display: none; }
+    .card { border: 1px solid #ddd; padding: 20px; border-radius: 10px; margin: 20px auto; width: 300px; }
+    .success { color: green; font-weight: bold; }
+  </style>
+  <style>
+  #scanner {
+    width: 300px;   /* adjust width */
+    height: 300px;  /* adjust height */
+    margin: auto;
+  }
+</style>
+
+</head>
+<body>
+  <h2>UPI QR Scanner</h2>
+
+  <!-- Scanner -->
+  <div id="scanner"></div>
+  <p id="scan-msg">Scan a valid UPI QR Code...</p>
+
+  <!-- Amount Entry -->
+  <div id="amount-screen" class="hidden">
+    <h3 id="payee-info"></h3>
+    <input type="number" id="amount" placeholder="Enter Amount" /><br><br>
+    <button onclick="goToPassword()">Proceed</button>
+  </div>
+
+  <!-- Password Screen -->
+  <div id="password-screen" class="hidden">
+    <h3 id="summary"></h3>
+    <input type="password" id="password" placeholder="Enter Password" /><br><br>
+    <button onclick="verifyPayment()">Confirm Payment</button>
+  </div>
+
+  <!-- Success Screen -->
+  <div id="success-screen" class="hidden">
+    <div class="card">
+      <div class="success">✓ Payment Successful!</div>
+      <p id="success-msg"></p>
+      <p id="success-details"></p>
+    </div>
+    <button onclick="window.location.reload()">Done</button>
+  </div>
+
+  <script>
+    let currentPayee = {};
+    const html5QrCode = new Html5Qrcode("scanner");
+
+    Html5Qrcode.getCameras().then(devices => {
+      if (devices && devices.length) {
+        html5QrCode.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          qrCodeMessage => {
+            fetch("/process_qr", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ data: qrCodeMessage })
+            })
+            .then(res => res.json())
+            .then(parsed => {
+              currentPayee = parsed;
+              document.getElementById("payee-info").innerText =
+                `Payee: ${parsed.pn || "Unknown"} (${parsed.pa || ""})`;
+              document.getElementById("scanner").classList.add("hidden");
+              document.getElementById("scan-msg").classList.add("hidden");
+              document.getElementById("amount-screen").classList.remove("hidden");
+              html5QrCode.stop();
+            });
+          }
+        );
+      }
+    });
+
+    function goToPassword() {
+      let amount = document.getElementById("amount").value;
+      if (!amount) { alert("Enter amount first!"); return; }
+      document.getElementById("amount-screen").classList.add("hidden");
+      document.getElementById("password-screen").classList.remove("hidden");
+      document.getElementById("summary").innerText =
+        `Payee: ${currentPayee.pn || "Unknown"} | Amount: ₹${amount}`;
+    }
+
+    function verifyPayment() {
+      let password = document.getElementById("password").value;
+      let amount = document.getElementById("amount").value;
+      fetch("/verify_password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          password: password,
+          amount: amount,
+          payee: currentPayee
+        })
+      })
+      .then(res => res.json())
+      .then(resp => {
+        if (resp.status === "success") {
+          document.getElementById("password-screen").classList.add("hidden");
+          document.getElementById("success-screen").classList.remove("hidden");
+          document.getElementById("success-msg").innerText = resp.timestamp;
+          document.getElementById("success-details").innerText =
+            `${resp.payee.pn || "Unknown"} (${resp.payee.pa || ""}) - ₹${resp.amount}`;
+        } else {
+          alert(resp.message);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

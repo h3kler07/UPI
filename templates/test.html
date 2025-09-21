@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head><title>Payment Success</title></head>
+<body style="text-align:center; color:green">
+  <h2>✓ Payment Successful</h2>
+  <p>{{ now }}</p>
+  <h3>{{ upi.get('pn','Unknown') }} ({{ upi.get('pa','') }})</h3>
+  <h1>₹{{ amount }}</h1>
+  <a href="/">Done</a>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head><title>Enter Amount</title></head>
+<body>
+  <h2>Payee: {{ upi.get('pn', 'Unknown') }} ({{ upi.get('pa','') }})</h2>
+  <form method="POST">
+    <label>Enter Amount:</label>
+    <input type="number" name="amount" required>
+    <button type="submit">Proceed</button>
+  </form>
+</body>
+</html>
